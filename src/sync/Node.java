@@ -7,13 +7,15 @@ public class Node {
 	public String name;
 	private double driftRate;
 	private double offset;
-	public long time;
+	public double time;
 	private double interval;
 	private List<Node> parent;
+	private double[] location;
+	private double commRange;
 
 	public Node(String name, double driftRate, double offset, double interval) {
 		this.name = name;
-		this.driftRate = driftRate / 1000000;
+		this.driftRate = driftRate / 1000000D;
 		this.offset = offset;
 		this.interval = interval;
 	}
@@ -21,10 +23,37 @@ public class Node {
 	public Node(String name, double driftRate, double offset, double interval,
 			List<Node> parent) {
 		this.name = name;
-		this.driftRate = driftRate / 1000000;
+		this.driftRate = driftRate / 1000000D;
 		this.offset = offset;
 		this.interval = interval;
 		this.parent = parent;
+	}
+
+	public Node(String name, double driftRate, double offset, double interval,
+			List<Node> parent, double[] location, double commRange) {
+		this.name = name;
+		this.driftRate = driftRate / 1000000D;
+		this.offset = offset;
+		this.interval = interval;
+		this.parent = parent;
+		this.location = location;
+		this.commRange = commRange;
+	}
+
+	public double[] getLocation() {
+		return location;
+	}
+
+	public void setLocation(double[] location) {
+		this.location = location;
+	}
+
+	public double getCommRange() {
+		return commRange;
+	}
+
+	public void setCommRange(double commRange) {
+		this.commRange = commRange;
 	}
 
 	public List<Node> getParent() {
@@ -48,7 +77,7 @@ public class Node {
 	}
 
 	public void setDriftRate(double driftRate) {
-		this.driftRate = driftRate;
+		this.driftRate = driftRate / 1000000D;
 	}
 
 	public double getOffset() {
@@ -61,7 +90,7 @@ public class Node {
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void beforeSync() {
-		this.time = this.time + (long) (driftRate * interval);
+		this.time = this.time + (double) (driftRate * interval);
 	}
 
 	public void randomSync() {
@@ -72,5 +101,8 @@ public class Node {
 
 	public void syncWith(Node dest) {
 		this.time = dest.time;
+	}
+
+	public void randomSyncWithLocation() {
 	}
 }

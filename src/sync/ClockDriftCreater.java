@@ -1,11 +1,25 @@
 package sync;
 
-public class ClockDriftCreater {
-	
-	public double[][] a;
+import java.util.Random;
 
-	public double ClockDriftCreater(double clockDrift) {
-		return 0;
+public class ClockDriftCreater {
+
+	public static double RandomClockDriftCreater(double clockDrift) {
+		Random random = new Random();
+		return random.nextDouble() * clockDrift * 2 - clockDrift;
+
+	}
+
+	public static double ExtremeClockDriftCreater(double clockDrift) {
+		Random random = new Random();
+
+		return random.nextInt(2) == 1 ? clockDrift : -clockDrift;
+
+	}
+
+	public static double NormalClockDriftCreater(double clockDrift) {
+		Random random = new Random();
+		return random.nextGaussian() * clockDrift * 2 - clockDrift;
 
 	}
 
