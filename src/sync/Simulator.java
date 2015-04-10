@@ -24,8 +24,28 @@ public class Simulator {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		Sample(5);
+		Sample(6);
+		Sample(7);
+		Sample(8);
+		Sample(9);
+		Sample(10);
+		Sample(20);
+		Sample(30);
+		Sample(40);
+		Sample(50);
 
-		sampleSize = 20;
+		Sample(60);
+		Sample(70);
+		Sample(80);
+		Sample(90);
+		Sample(100);
+
+	}
+
+	public static void Sample(int sampleS) {
+
+		sampleSize = sampleS;
 		sampleTimes = 1000000;
 		sampleLength = 500;
 
@@ -41,6 +61,7 @@ public class Simulator {
 		int count = 0;
 		double maxTimeDiff = 0;
 		double aveTimeDiff = 0;
+		double aveTempMax = 0;
 
 		while (count < sampleTimes) {
 
@@ -57,16 +78,18 @@ public class Simulator {
 				}
 			}
 
-//			for (int i = 0; i < sampleSize; i++) {
-//
-//				if (i == 0) {
-//					nodes.get(i).setDriftRate(-40D);
-//				} else {
-//					nodes.get(i).setDriftRate(40D);
-//				}
-//			}
+			// for (int i = 0; i < sampleSize; i++) {
+			//
+			// if (i == 0) {
+			// nodes.get(i).setDriftRate(-40D);
+			// } else {
+			// nodes.get(i).setDriftRate(40D);
+			// }
+			// }
 
 			count++;
+
+			aveTempMax = 0;
 
 			int s = 0;
 
@@ -85,11 +108,20 @@ public class Simulator {
 					diff = (diff > 0) ? diff : -diff;
 					if (maxTimeDiff < diff) {
 						maxTimeDiff = diff;
-						System.out.println(diff + "     " + count);
+						// System.out.println(diff + "     " + count);
+					}
+					if (aveTempMax < diff) {
+
+						aveTempMax = diff;
 					}
 				}
 			}
+
+			aveTimeDiff += aveTempMax;
 		}
+		aveTimeDiff /= 1000000D;
+		System.out.println(aveTimeDiff);
 		System.out.println(maxTimeDiff);
+		System.out.println();
 	}
 }
