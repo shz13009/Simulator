@@ -24,29 +24,21 @@ public class Simulator {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		Sample(2);
+		Sample(3);
+		Sample(4);
 		Sample(5);
 		Sample(6);
 		Sample(7);
 		Sample(8);
 		Sample(9);
 		Sample(10);
-		Sample(20);
-		Sample(30);
-		Sample(40);
-		Sample(50);
-
-		Sample(60);
-		Sample(70);
-		Sample(80);
-		Sample(90);
-		Sample(100);
-
 	}
 
 	public static void Sample(int sampleS) {
 
 		sampleSize = sampleS;
-		sampleTimes = 1000000;
+		sampleTimes = 10000000;
 		sampleLength = 500;
 
 		List<Node> nodes;
@@ -69,7 +61,7 @@ public class Simulator {
 
 			for (int i = 0; i < sampleSize; i++) {
 				nodes.add(new Node("n" + i, ClockDriftCreater
-						.RandomClockDriftCreater(40D), 0, 1000000D / 40D));
+						.ExtremeClockDriftCreater(40D), 0, 1000000D / 40D));
 
 				if (i > 0) {
 					parent = new ArrayList<Node>();
@@ -78,48 +70,49 @@ public class Simulator {
 				}
 			}
 
-			// for (int i = 0; i < sampleSize; i++) {
-			//
-			// if (i == 0) {
-			// nodes.get(i).setDriftRate(-40D);
-			// } else {
-			// nodes.get(i).setDriftRate(40D);
-			// }
-			// }
-
 			count++;
-
 			aveTempMax = 0;
-
-			int s = 0;
+			double min = 0;
+			double max = 0;
 
 			for (int i = 0; i < sampleLength; i++) {
 
 				for (int j = 0; j < nodes.size(); j++) {
 					nodes.get(j).beforeSync();
+					min = min < nodes.get(j).time ? min : nodes.get(j).time;
+					max = max > nodes.get(j).time ? max : nodes.get(j).time;
 				}
 
 				Collections.shuffle(seq);
 
 				for (int j = 0; j < nodes.size() - 1; j++) {
 					nodes.get(seq.get(j)).randomSync();
-					double diff = nodes.get(nodes.size() - 2).time
-							- nodes.get(nodes.size() - 1).time;
-					diff = (diff > 0) ? diff : -diff;
-					if (maxTimeDiff < diff) {
-						maxTimeDiff = diff;
-						// System.out.println(diff + "     " + count);
-					}
-					if (aveTempMax < diff) {
 
-						aveTempMax = diff;
-					}
+					// double diff = nodes.get(nodes.size() - 2).time
+					// - nodes.get(nodes.size() - 1).time;
+					// diff = (diff > 0) ? diff : -diff;
+					// if (maxTimeDiff < diff) {
+					// maxTimeDiff = diff;
+					// }
+					// if (aveTempMax < diff) {
+					// aveTempMax = diff;
+					// }
 				}
+
+				double diff = max - min;
+				if (maxTimeDiff < diff) {
+					maxTimeDiff = diff;
+				}
+				if (aveTempMax < diff) {
+					aveTempMax = diff;
+				}
+
 			}
 
 			aveTimeDiff += aveTempMax;
 		}
 		aveTimeDiff /= 1000000D;
+		System.out.println(sampleS);
 		System.out.println(aveTimeDiff);
 		System.out.println(maxTimeDiff);
 		System.out.println();
