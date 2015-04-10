@@ -6,7 +6,6 @@ package sync;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author Shaobo Zheng
@@ -38,7 +37,7 @@ public class Simulator {
 	public static void Sample(int sampleS) {
 
 		sampleSize = sampleS;
-		sampleTimes = 10000000;
+		sampleTimes = 1000000;
 		sampleLength = 500;
 
 		List<Node> nodes;
@@ -61,7 +60,7 @@ public class Simulator {
 
 			for (int i = 0; i < sampleSize; i++) {
 				nodes.add(new Node("n" + i, ClockDriftCreater
-						.ExtremeClockDriftCreater(40D), 0, 1000000D / 40D));
+						.RandomClockDriftCreater(40D), 0, 1000000D / 40D));
 
 				if (i > 0) {
 					parent = new ArrayList<Node>();
@@ -72,15 +71,25 @@ public class Simulator {
 
 			count++;
 			aveTempMax = 0;
-			double min = 0;
 			double max = 0;
+			double min = 0;
 
 			for (int i = 0; i < sampleLength; i++) {
 
+				min = nodes.get(0).time;
+				max = nodes.get(0).time;
 				for (int j = 0; j < nodes.size(); j++) {
 					nodes.get(j).beforeSync();
 					min = min < nodes.get(j).time ? min : nodes.get(j).time;
 					max = max > nodes.get(j).time ? max : nodes.get(j).time;
+				}
+
+				double diff2 = max - min;
+				if (maxTimeDiff < diff2) {
+					maxTimeDiff = diff2;
+				}
+				if (aveTempMax < diff2) {
+					aveTempMax = diff2;
 				}
 
 				Collections.shuffle(seq);
@@ -88,25 +97,20 @@ public class Simulator {
 				for (int j = 0; j < nodes.size() - 1; j++) {
 					nodes.get(seq.get(j)).randomSync();
 
-					// double diff = nodes.get(nodes.size() - 2).time
-					// - nodes.get(nodes.size() - 1).time;
-					// diff = (diff > 0) ? diff : -diff;
-					// if (maxTimeDiff < diff) {
-					// maxTimeDiff = diff;
-					// }
-					// if (aveTempMax < diff) {
-					// aveTempMax = diff;
-					// }
-				}
+					for (int k = 0; k < nodes.size(); k++) {
+						double diff = 0;
+						diff = nodes.get(seq.get(j)).time - nodes.get(k).time;
+						diff = (diff > 0) ? diff : -diff;
 
-				double diff = max - min;
-				if (maxTimeDiff < diff) {
-					maxTimeDiff = diff;
+						// System.out.println(seq.get(j) + "        " + k);
+						if (maxTimeDiff < diff) {
+							maxTimeDiff = diff;
+						}
+						if (aveTempMax < diff) {
+							aveTempMax = diff;
+						}
+					}
 				}
-				if (aveTempMax < diff) {
-					aveTempMax = diff;
-				}
-
 			}
 
 			aveTimeDiff += aveTempMax;
