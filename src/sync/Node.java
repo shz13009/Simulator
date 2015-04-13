@@ -1,5 +1,6 @@
 package sync;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -11,13 +12,59 @@ public class Node {
 	private double interval;
 	private List<Node> parent;
 	private double[] location;
-	private double commRange;
+	private List<Node> neighbour;
+	private boolean connected;
+	private Node parentNode;
+	private int length;
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public Node getParentNode() {
+		return parentNode;
+	}
+
+	public void setParentNode(Node parentNode) {
+		this.parentNode = parentNode;
+	}
+
+	public boolean isConnected() {
+		return connected;
+	}
+
+	public void setConnected(boolean connected) {
+		this.connected = connected;
+	}
+
+	public List<Node> getNeighbour() {
+		return neighbour;
+	}
+
+	public void setNeighbour(List<Node> neighbour) {
+		this.neighbour = neighbour;
+	}
 
 	public Node(String name, double driftRate, double offset, double interval) {
 		this.name = name;
 		this.driftRate = driftRate / 1000000D;
 		this.offset = offset;
 		this.interval = interval;
+	}
+
+	public Node(String name, double driftRate, double offset, double interval,
+			double[] location) {
+		this.name = name;
+		this.driftRate = driftRate / 1000000D;
+		this.offset = offset;
+		this.interval = interval;
+		this.location = location;
+		this.neighbour = new ArrayList<Node>();
+		this.connected = false;
 	}
 
 	public Node(String name, double driftRate, double offset, double interval,
@@ -30,14 +77,14 @@ public class Node {
 	}
 
 	public Node(String name, double driftRate, double offset, double interval,
-			List<Node> parent, double[] location, double commRange) {
+			List<Node> parent, double[] location) {
 		this.name = name;
 		this.driftRate = driftRate / 1000000D;
 		this.offset = offset;
 		this.interval = interval;
 		this.parent = parent;
 		this.location = location;
-		this.commRange = commRange;
+		this.connected = false;
 	}
 
 	public double[] getLocation() {
@@ -46,14 +93,6 @@ public class Node {
 
 	public void setLocation(double[] location) {
 		this.location = location;
-	}
-
-	public double getCommRange() {
-		return commRange;
-	}
-
-	public void setCommRange(double commRange) {
-		this.commRange = commRange;
 	}
 
 	public List<Node> getParent() {
@@ -104,5 +143,15 @@ public class Node {
 	}
 
 	public void randomSyncWithLocation() {
+		this.time = this.parentNode.time;
+	}
+
+	public double getDistanceFrom(Node node) {
+		return Math.sqrt(Math.pow(this.location[0] - node.location[0], 2)
+				+ Math.pow(this.location[1] - node.location[1], 2));
+	}
+
+	public void addNeighbour(Node node) {
+		this.neighbour.add(node);
 	}
 }

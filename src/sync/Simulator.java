@@ -32,6 +32,16 @@ public class Simulator {
 		Sample(8);
 		Sample(9);
 		Sample(10);
+		Sample(11);
+		Sample(12);
+		Sample(13);
+		Sample(14);
+		Sample(15);
+		Sample(16);
+		Sample(17);
+		Sample(18);
+		Sample(19);
+		Sample(20);
 	}
 
 	public static void Sample(int sampleS) {
@@ -76,9 +86,10 @@ public class Simulator {
 
 			for (int i = 0; i < sampleLength; i++) {
 
+				nodes.get(0).beforeSync();
 				min = nodes.get(0).time;
 				max = nodes.get(0).time;
-				for (int j = 0; j < nodes.size(); j++) {
+				for (int j = 1; j < nodes.size(); j++) {
 					nodes.get(j).beforeSync();
 					min = min < nodes.get(j).time ? min : nodes.get(j).time;
 					max = max > nodes.get(j).time ? max : nodes.get(j).time;
@@ -115,7 +126,7 @@ public class Simulator {
 
 			aveTimeDiff += aveTempMax;
 		}
-		aveTimeDiff /= 1000000D;
+		aveTimeDiff /= sampleTimes;
 		System.out.println(sampleS);
 		System.out.println(aveTimeDiff);
 		System.out.println(maxTimeDiff);
